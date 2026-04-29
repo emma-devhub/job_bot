@@ -19,7 +19,7 @@ steps:
     #   - https://company.com/about
 
   - skill: answer_writer
-    model: claude-opus-4-7   # or claude-sonnet-4-6 for faster/cheaper
+    model: gemini-2.0-flash   # or gemini-1.5-pro for higher quality
     word_limit: 150           # per answer
 
   - skill: human_review

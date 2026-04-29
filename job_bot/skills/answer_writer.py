@@ -1,15 +1,13 @@
-"""Skill 6 — AnswerWriter: draft open-ended answers via Claude API with anti-AI style."""
+"""Skill 6 — AnswerWriter: draft open-ended answers via Gemini API with anti-AI style."""
 from __future__ import annotations
 
 import os
 
-import anthropic
+import google.generativeai as genai
 
 from ..context import ApplicationContext, FormField
 from ..skill import Skill
 
-# The system prompt is the key tool for producing human-sounding text.
-# Rules encode what "AI writing" typically looks like so the model avoids it.
 _SYSTEM_PROMPT = """You are writing job application answers on behalf of the applicant.
 Your output will be read by humans, so it must sound like a real person wrote it.
 
@@ -33,11 +31,7 @@ You will receive: the question, the applicant's profile, their experience corpus
 Output only the answer text — no labels, no headers, no meta-commentary."""
 
 
-def _build_user_message(
-    field: FormField,
-    ctx: ApplicationContext,
-    word_limit: int,
-) -> str:
+def _build_user_message(field: FormField, ctx: ApplicationContext, word_limit: int) -> str:
     parts = [
         f"QUESTION: {field.label}",
         f"WORD LIMIT: {word_limit}",
@@ -48,16 +42,13 @@ def _build_user_message(
         "RESUME SUMMARY:",
         ctx.resume_text[:1500] if ctx.resume_text else "(not provided)",
     ]
-
     if ctx.experience_corpus:
         parts += ["", "EXPERIENCE STORIES (use these when relevant):"]
         for story in ctx.experience_corpus[:5]:
             parts.append(f"- {story}")
-
     if ctx.company_research:
         parts += ["", "COMPANY & JOB CONTEXT:"]
         parts.append(ctx.company_research[:1500])
-
     return "\n".join(parts)
 
 
@@ -77,7 +68,7 @@ def _dict_to_text(d: dict, indent: int = 0) -> str:
 
 class AnswerWriterSkill(Skill):
     name = "answer_writer"
-    description = "Draft open-ended answers using Claude with anti-AI style constraints."
+    description = "Draft open-ended answers using Gemini with anti-AI style constraints."
 
     def run(self, ctx: ApplicationContext) -> ApplicationContext:
         fields = ctx.open_fields or [
@@ -86,26 +77,25 @@ class AnswerWriterSkill(Skill):
         if not fields:
             return self.skip(ctx, "no open-ended fields to write")
 
-        api_key = self.cfg("api_key") or os.environ.get("ANTHROPIC_API_KEY")
+        api_key = self.cfg("api_key") or os.environ.get("GEMINI_API_KEY")
         if not api_key:
-            ctx.errors.append("answer_writer: ANTHROPIC_API_KEY not set")
+            ctx.errors.append("answer_writer: GEMINI_API_KEY not set")
             return ctx
 
-        model = self.cfg("model", "claude-opus-4-7")
+        model_name = self.cfg("model", "gemini-2.0-flash")
         word_limit = self.cfg("word_limit", 150)
-        client = anthropic.Anthropic(api_key=api_key)
+
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel(
+            model_name=model_name,
+            system_instruction=_SYSTEM_PROMPT,
+        )
 
         for field in fields:
             if field.id in ctx.answers:
                 continue
-
             user_msg = _build_user_message(field, ctx, word_limit)
-            response = client.messages.create(
-                model=model,
-                max_tokens=600,
-                system=_SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": user_msg}],
-            )
-            ctx.answers[field.id] = response.content[0].text.strip()
+            response = model.generate_content(user_msg)
+            ctx.answers[field.id] = response.text.strip()
 
         return ctx
