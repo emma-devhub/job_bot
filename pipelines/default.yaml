@@ -1,0 +1,29 @@
+# Default job application pipeline
+# Each step runs in order. Remove or reorder to customise.
+
+steps:
+  - skill: profile_loader
+    profile_path: profiles/default.yaml
+
+  - skill: platform_adapter
+    # Uncomment to pass extra URLs for company research scraping:
+    # extra_urls:
+    #   - https://company.com/about
+
+  - skill: question_classifier
+
+  - skill: auto_filler
+
+  - skill: company_researcher
+    # extra_urls:
+    #   - https://company.com/about
+
+  - skill: answer_writer
+    model: claude-opus-4-7   # or claude-sonnet-4-6 for faster/cheaper
+    word_limit: 150           # per answer
+
+  - skill: human_review
+    headless: false           # set true to skip interactive review
+
+  - skill: submitter
+    output_dir: submissions

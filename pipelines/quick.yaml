@@ -1,0 +1,17 @@
+# Quick pipeline — skips company research, goes straight to autofill + review.
+# Good for simple applications that are mostly standard fields.
+
+steps:
+  - skill: profile_loader
+    profile_path: profiles/default.yaml
+
+  - skill: platform_adapter
+
+  - skill: question_classifier
+
+  - skill: auto_filler
+
+  - skill: human_review
+
+  - skill: submitter
+    output_dir: submissions
