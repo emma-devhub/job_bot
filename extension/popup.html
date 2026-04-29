@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+  <title>Job Bot</title>
+</head>
+<body>
+
+<header>
+  <span class="logo">🤖</span>
+  <span class="title">Job Bot</span>
+  <a href="#" id="settings-link" title="Settings">⚙️</a>
+</header>
+
+<!-- Status bar -->
+<div id="status-bar">
+  <span id="platform-badge" class="badge">detecting…</span>
+  <span id="job-title" class="job-title"></span>
+</div>
+
+<!-- Profile status -->
+<div id="profile-status" class="info-row">
+  <span id="profile-name">No profile loaded</span>
+  <span id="field-counts"></span>
+</div>
+
+<!-- Divider -->
+<hr>
+
+<!-- Action buttons -->
+<div id="actions">
+  <button id="btn-fill-standard" class="btn btn-secondary" disabled>
+    📋 Fill Standard Fields
+  </button>
+  <button id="btn-generate" class="btn btn-primary" disabled>
+    ✍️ Generate AI Answers
+  </button>
+</div>
+
+<!-- Progress / result -->
+<div id="result" class="hidden"></div>
+
+<!-- No profile warning -->
+<div id="no-profile-warning" class="warning hidden">
+  No profile set. <a href="#" id="open-settings">Open Settings →</a>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

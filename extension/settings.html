@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Bot — Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+<div class="container">
+  <h1>🤖 Job Bot Settings</h1>
+
+  <!-- API Config -->
+  <section>
+    <h2>AI Configuration</h2>
+    <label>
+      Gemini API Key
+      <input type="password" id="api-key" placeholder="AIza…">
+    </label>
+    <label>
+      Model
+      <select id="model">
+        <option value="gemini-2.0-flash">gemini-2.0-flash (fast, cheap)</option>
+        <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+        <option value="gemini-1.5-pro">gemini-1.5-pro (best quality)</option>
+      </select>
+    </label>
+    <label>
+      Word limit per answer
+      <input type="number" id="word-limit" min="50" max="500" step="25" value="150">
+    </label>
+  </section>
+
+  <!-- Personal Info -->
+  <section>
+    <h2>Personal Info</h2>
+    <div class="two-col">
+      <label>First Name   <input type="text" id="first_name"></label>
+      <label>Last Name    <input type="text" id="last_name"></label>
+      <label>Email        <input type="email" id="email"></label>
+      <label>Phone        <input type="tel" id="phone"></label>
+      <label>LinkedIn URL <input type="url" id="linkedin"></label>
+      <label>GitHub URL   <input type="url" id="github"></label>
+      <label>Website      <input type="url" id="website"></label>
+      <label>Location     <input type="text" id="location"></label>
+      <label>Work Auth    <input type="text" id="work_auth" placeholder="Yes, authorized in US"></label>
+      <label>Sponsorship  <input type="text" id="sponsorship" placeholder="No"></label>
+      <label>Salary Exp.  <input type="text" id="salary" placeholder="Open to discussion"></label>
+      <label>Start Date   <input type="text" id="start_date" placeholder="2 weeks after offer"></label>
+      <label>Years Exp.   <input type="text" id="years_exp"></label>
+    </div>
+  </section>
+
+  <!-- Resume -->
+  <section>
+    <h2>Resume Text</h2>
+    <p class="hint">Paste your resume as plain text. Used as context for AI writing.</p>
+    <textarea id="resume_text" rows="10" placeholder="Jane Doe | jane@email.com&#10;&#10;EXPERIENCE&#10;..."></textarea>
+  </section>
+
+  <!-- Experience stories -->
+  <section>
+    <h2>Experience Stories (PAR/STAR)</h2>
+    <p class="hint">One story per line. These are injected into AI prompts for open-ended questions.</p>
+    <textarea id="corpus" rows="8"
+      placeholder="At Acme I led the monolith-to-microservices migration. Over 6 months I rewrote 4 core services in Go, cutting p99 latency by 40%.&#10;&#10;At Beta I built a fraud ML pipeline that cut detection time from 8 hours to 20 minutes by switching from batch CSV to Kafka streaming."></textarea>
+  </section>
+
+  <div class="actions">
+    <button id="btn-save" class="btn-primary">💾 Save</button>
+    <span id="saved-msg" class="hidden">✓ Saved</span>
+  </div>
+</div>
+
+<script src="settings.js"></script>
+</body>
+</html>
